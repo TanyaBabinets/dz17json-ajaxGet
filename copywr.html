@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="allusers">
+        <h2>All users</h2>
+        <div id="list" class="username"></div>
+        <div id="details" class="details"></div>
+
+    </div>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'https://jsonplaceholder.typicode.com/users',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    let users = data.map(user => ({
+                        id: user.id,
+                        name: user.name  //функция map пройдет по каждому юзеру в data и создаст массив из имен
+                    }));
+
+                    let showList = $('#list');
+                    users.forEach(user => {
+                        let username = $('<div></div>').addClass('user').data('id', user.id);//создаем div class="user" и id хранит данные, которые достаем при клике на элемент
+                        username.append(`<div>${user.name}</div>`);
+                        showList.append(username);
+                    });
+                    //событие при клике на Имя
+                    $('.user').on('click', function () {
+                        let userId = $(this).data('id');
+                        $.ajax({
+                            url: `https://jsonplaceholder.typicode.com/users/${userId}`,
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (user) {
+                                let details = `<h3>
+                                     <table>
+                                   <tr><th>Name: ${user.name}</th></tr>
+            <tr><th>Email: ${user.email}</th></tr>
+             <tr><th>Phone: ${user.phone}</th></tr>
+             <tr><th>Website: ${user.website}</th></tr>
+              </table>
+            <div class="button"><button id="showposts">Show posts</button></div>`;
+
+                                $('#details').html(details);
+                                //кнопка Показать посты
+                                $('#showposts').on('click', function () {
+                                    $.ajax({
+                                        url: `https://jsonplaceholder.typicode.com/posts?userId=${userId}`,
+                                        method: 'GET',
+                                        dataType: 'json',
+                                        success: function (posts) {
+                                            let postList = `<h3>Posts:</h3>
+                                                <table>
+                                                <tr><th>Title</th><th>Text</th></tr>`;
+
+                                            posts.forEach(post => {
+                                                postList += `<tr><td>${post.title}</td><td>${post.body}</td></tr>`;
+                                            });
+                                            postList += '</table>';
+                                            $('#details').append(postList);
+                                        },
+                                        error: function (jqXHR, statusText, error) {
+                                            console.log(jqXHR.status + '\n' + statusText + '\n' + error);
+                                        }
+                                    });
+                                });
+                            },
+                            error: function (jqXHR, statusText, error) {
+                                console.log(jqXHR.status + '\n' + statusText + '\n' + error);
+                            }
+                        });
+                    });
+                },
+                error: function (jqXHR, statusText, error) {
+                    console.log(jqXHR.status + '\n' + statusText + '\n' + error);
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="block">
+    <div class="block1" id="left">
+    <p>
+        [{"id":1, "name": "Ivanova Elena", "position": "director"},</p>
+        {"id":2, "name": "Krasnov Sergey", "position": "project-manager"},</br>
+        {"id":3, "name": "Grishko Svetlana", "position": "office-manager"},</br>
+        {"id":4, "name": "Korenko Natalia", "position": "sales-manager"},</br>
+        {"id":5, "name": "Gorenko Yuriy", "position": "sales-manager"}]
+    </p>
+    </div>
+    <div id="arrow">&rarr;</div>
+   
+    <div class="block1" id="right">
+    <p></p>
+    </div>
+</div>
+    <script>
+document.getElementById('arrow').addEventListener('click', function(){
+    let leftText= document.getElementById('left').innerText;
+    let jsonObject=JSON.parse(leftText);//преобразуем в обьект
+    let rightText=JSON.stringify(jsonObject, null,4);//обьект обратно в строку, 4 пробела и null тут означает, что все свойства обьекта будут сохранены при форматировании
+    document.getElementById('right').innerText=rightText;
+
+});
+    </script>
+</body>
+</html>
